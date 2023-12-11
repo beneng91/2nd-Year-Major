@@ -1,8 +1,6 @@
 {
 	"FileVersion": 3,
-
-	"EngineAssociation": "4.27",
-
+	"EngineAssociation": "{9B0A3C05-43ED-9A4F-7063-B08A278B1C21}",
 	"Category": "",
 	"Description": "",
 	"Modules": [
@@ -27,6 +25,10 @@
 			"SupportedTargetPlatforms": [
 				"Win64"
 			]
+		},
+		{
+			"Name": "GamepadUMGPlugin",
+			"Enabled": false
 		}
 	]
 }

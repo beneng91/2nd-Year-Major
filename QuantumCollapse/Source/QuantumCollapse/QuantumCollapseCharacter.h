@@ -47,6 +47,9 @@ public:
 	//FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool firstTimeGrapple = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool ropeHasCollided = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -68,7 +71,7 @@ public:
 	bool hasHitGrapple;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool spawned;
+	bool spawned = true;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector grappleAnchorPoint;
@@ -95,6 +98,12 @@ public:
 	void ArrowAiming(UArrowComponent* arrow);
 
 	UFUNCTION(BlueprintCallable)
+	void DeathFunction();
+
+	UFUNCTION(BlueprintCallable)
+	void RespawnFunction(FVector spawnPos);
+
+	UFUNCTION(BlueprintCallable)
 	void LaunchGrappleHook(AActor* hook);
 
 	UFUNCTION(BlueprintCallable)
@@ -104,10 +113,10 @@ public:
 	void SwingingFunction(float ropeLength, FVector raycastPoint, FVector inputDir);
 
 	UFUNCTION(BlueprintCallable)
-	void PlayerOffScreenRespawn(FVector spawnPos, float boundsOffset, FVector2D viewportSize);
+	void PlayerOffScreenRespawn(FVector spawnPos, float boundsOffset, FVector2D viewportSize, int respawnDelay);
 
 	UFUNCTION(BlueprintCallable)
-	void RespawnPlayer(FVector spawnPos);
+	void RespawnPlayer(FVector spawnPos, int respawnDelay);
 
 	UFUNCTION(BlueprintCallable)
 	void ArrowRotations(FVector2D leftStickInput, FVector2D rightStickInput, UArrowComponent* grappleArrow, UArrowComponent* swordArrow);

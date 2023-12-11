@@ -13,6 +13,27 @@ class AQuantumCollapseGameMode : public AGameModeBase
 
 public:
 	AQuantumCollapseGameMode();
+
+	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
+
+protected:
+
+	TMap<int32, APlayerController*> GamepadToControllerMap;
+
+	int32 UniqueGamepadCount;
+
+	bool bIsSpawningPlayers;
+
+	UPROPERTY(EditDefaultsOnly, Category="Game")
+	TSubclassOf<class AQuantumCollapseCharacter> PlayerCharacterClass;
+
+	void SpawnPlayers();
+	void ResetButtonPressed();
+
+public:
+	void HandleGamepadButtonPressed(APlayerController* Controller);
+	void HandleGamepadButtonRelease(APlayerController* Controller);
 };
 
 

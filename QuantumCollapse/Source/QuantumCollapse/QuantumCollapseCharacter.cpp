@@ -162,6 +162,11 @@ FVector AQuantumCollapseCharacter::CalculateGrappleForce(float xInputAxis, float
 	FVector directionVector = upDir + rightDir;
 	directionVector.Normalize();
 	FVector directionForce = directionVector * grappleForce;
+
+	if (!firstTimeGrapple && xInputAxis == 0)
+		directionForce.Y = 0;
+
+	directionForce.X = 0;
 	return directionForce;
 }
 
@@ -199,7 +204,7 @@ void AQuantumCollapseCharacter::SwingingFunction(float ropeLength, FVector rayca
 	}
 }
 
-void AQuantumCollapseCharacter::PlayerOffScreenRespawn(FVector spawnPos, float boundsOffset, FVector2D viewportSize)
+void AQuantumCollapseCharacter::PlayerOffScreenRespawn(FVector spawnPos, float boundsOffset, FVector2D viewportSize, int respawnDelay)
 {
 	const APlayerController* const PlayerController = Cast<const APlayerController>(GetController());
 
@@ -218,21 +223,43 @@ void AQuantumCollapseCharacter::PlayerOffScreenRespawn(FVector spawnPos, float b
 		screenY < viewportHeight - boundsOffset)
 	{
 		// If player is in the bounds of the screen
+		UE_LOG(LogTemp, Warning, TEXT("Player is in bounds"));
 	}
 	else
 	{
 		// If player goes outside the view of the camera
-		RespawnPlayer(spawnPos);
+		UE_LOG(LogTemp, Warning, TEXT("Player is out of bounds"));
+		RespawnPlayer(spawnPos, respawnDelay);
 	}
 }
 
-void AQuantumCollapseCharacter::RespawnPlayer(FVector spawnPos)
+void AQuantumCollapseCharacter::DeathFunction()
 {
+	spawned = false;
+	SetActorHiddenInGame(true);
+	SetActorLocation(FVector(GetActorLocation().X,9999,9999));
+}
+
+void AQuantumCollapseCharacter::RespawnFunction(FVector spawnPos)
+{
+	// Respawning
 	SetActorLocation(spawnPos);
+	SetActorHiddenInGame(false);
 	deleteGrapple = true;
 	if (lives != 0)
 		lives -= 1;
 	spawned = true;
+}
+
+void AQuantumCollapseCharacter::RespawnPlayer(FVector spawnPos, int respawnDelay)
+{
+	// Death
+	DeathFunction();
+	
+	// Delay
+	FTimerHandle TimerHandle;
+	FTimerDelegate TimerDelegate = FTimerDelegate::CreateUObject(this, &AQuantumCollapseCharacter::RespawnFunction, spawnPos);
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, TimerDelegate, respawnDelay, false);
 }
 
 void AQuantumCollapseCharacter::ArrowRotations(FVector2D leftStickInput, FVector2D rightStickInput, UArrowComponent* grappleArrow, UArrowComponent* swordArrow)
